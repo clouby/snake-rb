@@ -1,33 +1,28 @@
 # Dependencies
 require_relative "./view/ruby2d"
 require_relative "./model/state"
+require_relative "./actions/actions"
 
 class App
-    def start
-        view = View::Ruby2dView.new
-        initial_state = Models::initial_state
-        view.render(initial_state)
+    def initialize
+        @state = Models::initial_state
     end
 
-    def init_timer
-        loop do
-            sleep 0.5
-            # Trigger movement
+    def start
+        view = View::Ruby2dView.new
+        Thread.new { init_timer(view) }
+        view.start(@state)
+    end
 
+    def init_timer(view)
+        loop do
+            # Trigger movement
+            @state = Actions::move_snake(@state)
+            view.render(@state)
+            sleep 0.5
         end
     end
 end
 
-module Directions
-    UP = :up
-    DOWN = :down
-end
-
-next_direction = :up
-
-case next_direction
-when :up 
-    puts "You press UP"
-when :down
-    puts "You press DOWN"
-end
+app = App.new
+app.start
