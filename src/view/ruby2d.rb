@@ -4,8 +4,9 @@ require "ruby2d"
 # Define module View
 module View
     class Ruby2dView
-        def initialize
+        def initialize(app)
             @pixel_size = 50
+            @app = app
         end
 
         def start(state)
@@ -14,10 +15,16 @@ module View
                 title: "Snake", 
                 width: (@pixel_size * state.grid.cols), 
                 height: (@pixel_size * state.grid.rows))
+            on :key_down do |event|
+                # A key was presssed
+                handle_key_event(event)
+            end
             show
         end
 
         def render(state)
+            extend Ruby2D::DSL
+            close if state.game_finished
             render_snake(state)
             render_food(state)
         end
@@ -48,6 +55,19 @@ module View
                 size: @pixel_size,
                 color: 'yellow'
             )
+        end
+
+        def handle_key_event(event)
+            case event.key
+            when 'up'
+                @app.send_action(:change_direction, Models::Direction::UP)
+            when 'down'
+                @app.send_action(:change_direction, Models::Direction::DOWN)
+            when 'left'
+                @app.send_action(:change_direction, Models::Direction::LEFT)
+            when 'right'
+                @app.send_action(:change_direction, Models::Direction::RIGHT)
+            end
         end
     end
 end

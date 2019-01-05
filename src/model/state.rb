@@ -8,6 +8,11 @@ module Models
         DOWN = :DOWN
     end
 
+    module Extractions
+        SIDE = :UNIQUE
+        UP_STREAM = :TOKEN
+    end
+
     class Coord < Struct.new(:row, :col)
     end
 
@@ -20,7 +25,7 @@ module Models
     class Grid < Struct.new(:rows, :cols)
     end
 
-    class State < Struct.new(:snake, :food, :grid, :next_direction, :game_finished)
+    class State < Struct.new(:snake, :food, :grid, :curr_direction, :game_finished)
     end
 
     def self.initial_state
